@@ -2,17 +2,20 @@ import "./App.css";
 import "../src/components/UI/Toast";
 import { useToast } from "../src/hooks/useToast";
 import Toast from "../src/components/UI/Toast";
+import { aiService } from "../src/services/aiService";
+
 
 function App() {
 
   const { showToast, toast, removeToast } = useToast();
+  const API_KEY = '';
 
   return (
     <>
       <div className="card flex ...">
         <div className="flex-1 ...">Currículo com IA</div>
       </div>
-      
+
       <div className="card flex ...">
         <div className="flex-1 ... ">
           <button
@@ -40,6 +43,15 @@ function App() {
             Toast de informação
           </button>
         </div>
+
+        <button
+          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          onClick={() => {
+            aiService.sendRequest(`${API_KEY}`, showToast);
+          }}
+        >
+          Teste de API
+        </button>
       </div>
       {toast && (
         <Toast
