@@ -24,28 +24,3 @@ Após instalar as dependências, executar o comando:
 ```bash
 npm run dev
 ```
----
-Executando o backend
-Na pasta raiz do projeto, executar o comando:
-```bash
-npm run back
-```
-
-A API estará disponível em `http://localhost:3000`
-Para autenticar é necessário passar o token da API no header da requisição.
-```
-Authorization: Bearer <apiToken>
-```
-
-Para enviar uma mensagem para a API, faça uma requisição POST para `http://localhost:3000/chat` com o seguinte corpo:
-```json
-{
-  "mensagem": "Olá, como está?"
-}
-```
-A resposta da API será um JSON contendo a mensagem respondida pela IA.
-```json
-{
-  "resposta": "Olá! Estou bem, obrigado por perguntar."
-}
-```
