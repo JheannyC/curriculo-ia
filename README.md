@@ -12,7 +12,7 @@ Este projeto tem como objetivo criar um formulário para o usuário preencher co
 - npm
 - Vite
 
-Requisitos para executar o projeto
+### Requisitos para executar o projeto
 - Node.js (latest)
 - npm (latest)
 ---
@@ -23,4 +23,21 @@ npm install
 Após instalar as dependências, executar o comando:
 ```bash
 npm run dev
+```
+<br>
+
+## Serviço de autenticação - Utilizando chave de API do Gemini
+
+Para executar a aplicação é necessário ter uma chave do Gemini para realizar requisições para a IA.
+
+- Acessar: https://aistudio.google.com/apikey
+- Logar com uma conta do google
+- Clicar em 'Get API Key' (Build with the Gemini API)
+- Aceitar os termos
+- Clicar em 'Criar chave da API'
+- Copiar a chave para utilizar na aplicação
+
+No arquivo `aiService.ts`, existe uma função que é necessário passar a key gerada para realizar a autenticação. A depender do retorno da requisição, a função irá exibir um toast com a mensagem de sucesso ou erro.
+```
+aiService.sendRequest(`${API_KEY}`, showToast);
 ```
