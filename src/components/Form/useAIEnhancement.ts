@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { enhanceText } from '../services/aiService'
-import { AIRequest, AIResponse } from '../types/api.types'
-import { useToast } from './useToast'
+import { AIRequest, AIResponse } from '../../types/api.types'
+import { useToast } from '../../hooks/useToast'
+import { enhanceText } from '../../services/aiService'
 
 export const useAIEnhancement = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -11,6 +11,7 @@ export const useAIEnhancement = () => {
     setIsLoading(true)
     
     try {
+      console.log('Enhancing text with AI:', request)
       const result = await enhanceText(request)
       
       if (result.success) {
@@ -21,6 +22,7 @@ export const useAIEnhancement = () => {
       
       return result
     } catch (err) {
+      console.error('Error in AI enhancement:', err)
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido'
       showError(errorMessage, 3000)
       return {
