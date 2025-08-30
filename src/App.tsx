@@ -131,7 +131,7 @@ function App() {
             onChange={(e) => setDescricao(e.target.value)}
             placeholder="Descrição da experiência"
             className="w-full border px-3 py-2 mb-2 rounded"
-          />
+          ></textarea>
 
           <button
             type="button"
