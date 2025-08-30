@@ -15,6 +15,7 @@ function App() {
   const [periodo, setPeriodo] = useState("");
   const [local, setLocal] = useState("");
   const [descricao, setDescricao] = useState("");
+  const [atual, setAtual] = useState(false);
 
   // Lista de experiências
   const [experiencias, setExperiencias] = useState<
@@ -24,9 +25,14 @@ function App() {
   // Adicionar experiência
   const addExperiencia = () => {
 
-    if (!cargo || !empresa || !periodo || !local || !descricao) return; // evita item vazio
+    if (!cargo || !empresa || !periodo || !local || !descricao) {
+      showToast("error", "Por favor, preencha todos os campos da experiência.");  
+      return;
+    } // evita item vazio
 
-    const nova = { cargo, empresa, periodo, local, descricao };
+    const periodoFinal = atual ? `${periodo} - Atual` : periodo;
+
+    const nova = { cargo, empresa, periodo: periodoFinal, local, descricao };
 
     setExperiencias(prev => [...prev, nova]);
 
@@ -35,6 +41,7 @@ function App() {
     setPeriodo("");
     setLocal("");
     setDescricao("");
+    setAtual(false);
   };
 
   // Remover experiência
@@ -117,6 +124,17 @@ function App() {
             placeholder="Período"
             className="w-full border px-3 py-2 mb-2 rounded"
           />
+
+          <div className="flex items-center gap-2 mb-2">
+            <input
+              id="atual"
+              type="checkbox"
+              checked={atual}
+              onChange={(e) => setAtual(e.target.checked)}
+              className="w-4 h-4"
+            />
+            <label htmlFor="atual" className="text-sm">Trabalho Atual</label>
+          </div>
 
           <input
             type="text"
