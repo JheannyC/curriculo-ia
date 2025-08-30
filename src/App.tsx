@@ -47,7 +47,7 @@ function App() {
 
   return (
     
-    <>
+    <div className="h-dvh flex flex-col">
 
       <header className="flex items-center justify-between px-4 py-3 bg-white border-b">
         <div className="flex items-center gap-3">
@@ -77,11 +77,11 @@ function App() {
         </div>
       </header>
 
-      <main className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
-        <section className="bg-white p-5 shadow rounded">
-          <h2 className="font-bold text-lg mb-4">Informações do Currículo</h2>
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 min-h-0">
+        <section className="bg-white border rounded-xl shadow p-6 h-full min-h-0 overflow-y-auto">
+          <h2 className="font-bold text-lg px-5 pt-5 border-b">Informações do Currículo</h2>
 
-          <div className="mb-3">
+          <div className="px-5 py-4 space-y-3 pr-3 scroll-area">
             <label className="block text-sm font-semibold">Nome Completo</label>
             <input
               type="text"
@@ -163,7 +163,7 @@ function App() {
           </div>
         </section>
 
-        <aside className="bg-white rounded-xl shadow p-6">
+        <aside className="bg-white border rounded-xl shadow p-6 h-full min-h-0 overflow-y-auto">
 
           <h2 className="text-2xl font-extrabold mb-1">
             {nome || "Seu Nome Completo"}
@@ -171,29 +171,29 @@ function App() {
 
           <div className="h-[2px] bg-black my-4" />
 
-          <h3 className="text-lg font-bold mb-3">Experiência Profissional</h3>
+          <div className="overflow-y-auto px-6 pb-6 pr-4 space-y-4 scroll-area">
+            <h3 className="text-lg font-bold">Experiência Profissional</h3>
 
-          {experiencias.length === 0 ? (
-            <p className="text-gray-500 italic">
-              Suas experiências aparecerão aqui conforme você adiciona…
-            </p>
-          ) : (
-            <ul className="space-y-4">
-              {experiencias.map((exp, i) => (
-                <li key={i} className="border border-gray-200 rounded-lg p-4">
-                  <div className="text-base font-semibold">{exp.cargo}</div>
-
-                  <div className="text-sm text-gray-600">
-                    {exp.empresa} • {exp.periodo} • {exp.local}
-                  </div>
-
-                  {exp.descricao && (
-                    <p className="text-sm mt-2 leading-relaxed">{exp.descricao}</p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
+            {experiencias.length === 0 ? (
+              <p className="text-gray-500 italic">
+                Suas experiências aparecerão aqui conforme você adiciona…
+              </p>
+            ) : (
+              <ul className="space-y-4">
+                {experiencias.map((exp, i) => (
+                  <li key={i} className="border border-gray-200 rounded-lg p-4">
+                    <div className="text-base font-semibold">{exp.cargo}</div>
+                    <div className="text-sm text-gray-600">
+                      {exp.empresa} • {exp.periodo} • {exp.local}
+                    </div>
+                    {exp.descricao && (
+                      <p className="text-sm mt-2 leading-relaxed">{exp.descricao}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </aside>
       </main>
 
@@ -246,7 +246,7 @@ function App() {
           onClose={removeToast}
         />
       )}
-    </>
+    </div>
   );
 }
 
