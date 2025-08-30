@@ -3,6 +3,7 @@ import "../src/components/UI/Toast";
 import { useToast } from "../src/hooks/useToast";
 import Toast from "../src/components/UI/Toast";
 import { aiService } from "../src/services/aiService";
+import { useState } from "react";
 
 
 function App() {
@@ -11,6 +12,9 @@ function App() {
   const API_KEY = '';
 
   return (
+
+
+
     <>
       <div className="card flex ...">
         <div className="flex-1 ...">Currículo com IA</div>
