@@ -81,11 +81,9 @@ export default function Toast({
   return (
     <div
       id="toast-top-left"
-      className={`fixed flex top-5 right-5 items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-800" role="alert>
-            ${type === "success"} 
-            ${type === "error"} 
-            ${type === "info"} 
-            ${type === "warning"}`}
+      className="fixed flex top-5 right-5 items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-800"
+      role="alert" 
+
     >
       {icons[type as "success" | "error" | "info" | "warning"]}
       <div className="ms-3 text-sm font-normal">{message}</div>

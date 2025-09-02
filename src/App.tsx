@@ -1,270 +1,117 @@
-import "./App.css";
-import { useToast } from "../src/hooks/useToast";
-import Toast from "../src/components/UI/Toast";
-import { aiService } from "../src/services/aiService";
-import { useState } from "react";
-
+import React, { useState } from 'react';
+import { useToast } from './hooks/useToast';
+import Toast from './components/UI/Toast';
+import { useCVData } from './hooks/useCVData';
+import FormSection from './components/Layout/FormSection';
+import PreviewSection from './components/Layout/PreviewSection';
+import ErrorBoundary from './components/UI/ErrorBoundary';
 
 function App() {
-
-  const [nome, setNome] = useState<string>("");
-
-  // Campos da experiência
-  const [cargo, setCargo] = useState("");
-  const [empresa, setEmpresa] = useState("");
-  const [periodo, setPeriodo] = useState("");
-  const [local, setLocal] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [atual, setAtual] = useState(false);
-
-  // Lista de experiências
-  const [experiencias, setExperiencias] = useState<
-    { cargo: string; empresa: string; periodo: string; local:string; descricao: string }[]
-  >([]);
-
-  // Adicionar experiência
-  const addExperiencia = () => {
-
-    if (!cargo || !empresa || !periodo || !local || !descricao) {
-      showToast("error", "Por favor, preencha todos os campos da experiência.");  
-      return;
-    } // evita item vazio
-
-    const periodoFinal = atual ? `${periodo} - Atual` : periodo;
-
-    const nova = { cargo, empresa, periodo: periodoFinal, local, descricao };
-
-    setExperiencias(prev => [...prev, nova]);
-
-    setCargo("");
-    setEmpresa("");
-    setPeriodo("");
-    setLocal("");
-    setDescricao("");
-    setAtual(false);
-  };
-
-  // Remover experiência
-  const removeExperiencia = (index: number) => {
-    setExperiencias(prev => prev.filter((_, i) => i !== index));
-  };
-
   const { showToast, toast, removeToast } = useToast();
-  const API_KEY = '';
+  const cvData = useCVData();
+  const [API_KEY, setAPI_KEY] = useState('');
+  const [isTestingAPI, setIsTestingAPI] = useState(false);
+
+  const handleTestAPI = async () => {
+    if (!API_KEY.trim()) {
+      showToast('error', 'Por favor, insira uma API Key válida');
+      return;
+    }
+
+    setIsTestingAPI(true);
+    try {
+      // Simulação de teste de API - será substituído pelo aiService real
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      showToast('success', 'API conectada com sucesso!');
+    } catch (error) {
+      showToast('error', 'Falha ao conectar com a API');
+    } finally {
+      setIsTestingAPI(false);
+    }
+  };
+
+  const handleExportPDF = () => {
+    showToast('info', 'Exportação para PDF em desenvolvimento');
+  };
 
   return (
-    
-    <div className="h-dvh flex flex-col">
+    <ErrorBoundary>
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        {/* Header */}
+        <header className="bg-white border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">CV</span>
+              </div>
+              <div>
+                <h1 className="text-xl font-semibold text-gray-900">
+                  Gerador de Currículos IA
+                </h1>
+                <p className="text-sm text-gray-500">
+                  Crie currículos profissionais com inteligência artificial
+                </p>
+              </div>
+            </div>
 
-      <header className="flex items-center justify-between px-4 py-3 bg-white border-b">
-        <div className="flex items-center gap-3">
-          <span className="logo" aria-hidden="true"></span>
-          <div>
-            <strong>Gerador de Currículos IA</strong>
-            <div className="subtitle text-sm text-gray-500">
-              Gerador Inteligente de Currículos com IA
+            <div className="flex items-center space-x-4">
+              {/* API Key Input */}
+              <div className="flex items-center space-x-2">
+                <div className="relative">
+                  <input
+                    type="password"
+                    value={API_KEY}
+                    onChange={(e) => setAPI_KEY(e.target.value)}
+                    placeholder="Cole sua API Key"
+                    className="w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    aria-label="Chave da API"
+                  />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                    <span className="text-gray-400">🔑</span>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={handleTestAPI}
+                  disabled={!API_KEY.trim() || isTestingAPI}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {isTestingAPI ? 'Testando...' : 'Testar API'}
+                </button>
+              </div>
+
+              <button
+                onClick={handleExportPDF}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+              >
+                Exportar PDF
+              </button>
             </div>
           </div>
-        </div>
+        </header>
 
-        <div className="actions flex items-center gap-2">
-          <label className="api-key flex items-center gap-2 border rounded px-2 py-1">
-            <span>🔐</span>
-            <input
-              type="text"
-              placeholder="Cole sua API Key"
-              aria-label="API Key"
-              className="outline-none"
-            />
-          </label>
-
-          <button className="btn border rounded px-3 py-2" id="btnExport">
-            Exportar PDF
-          </button>
-        </div>
-      </header>
-
-      <main className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 min-h-0">
-        <section className="bg-white border rounded-xl shadow p-6 h-full min-h-0 overflow-y-auto">
-          <h2 className="font-bold text-lg px-5 pt-5 border-b">Informações do Currículo</h2>
-
-          <div className="px-5 py-4 space-y-3 pr-3 scroll-area">
-            <label className="block text-sm font-semibold">Nome Completo</label>
-            <input
-              type="text"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              placeholder="Seu nome completo"
-              className="w-full border px-3 py-2 rounded"
-            />
-          </div>
-
-          <h3 className="font-semibold mt-4 mb-2">Adicionar Experiência</h3>
-
-          <input
-            type="text"
-            value={cargo}
-            onChange={(e) => setCargo(e.target.value)}
-            placeholder="Cargo"
-            className="w-full border px-3 py-2 mb-2 rounded"
+        {/* Main Content */}
+        <main className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+          <FormSection
+            cvData={cvData}
+            onAIEnhance={() => showToast('info', 'Otimização com IA em desenvolvimento')}
+            aiLoading={false}
           />
+          
+          <PreviewSection cvData={cvData.cvData} />
+        </main>
 
-          <input
-            type="text"
-            value={empresa}
-            onChange={(e) => setEmpresa(e.target.value)}
-            placeholder="Empresa"
-            className="w-full border px-3 py-2 mb-2 rounded"
+        {/* Toast System */}
+        {toast && (
+          <Toast
+            type={toast.type}
+            message={toast.message}
+            duration={3000}
+            onClose={removeToast}
           />
-
-          <input
-            type="text"
-            value={periodo}
-            onChange={(e) => setPeriodo(e.target.value)}
-            placeholder="Período"
-            className="w-full border px-3 py-2 mb-2 rounded"
-          />
-
-          <div className="flex items-center gap-2 mb-2">
-            <input
-              id="atual"
-              type="checkbox"
-              checked={atual}
-              onChange={(e) => setAtual(e.target.checked)}
-              className="w-4 h-4"
-            />
-            <label htmlFor="atual" className="text-sm">Trabalho Atual</label>
-          </div>
-
-          <input
-            type="text"
-            value={local}
-            onChange={(e) => setLocal(e.target.value)}
-            placeholder="Local (ex.: Florianópolis/SC)"
-            className="w-full border px-3 py-2 mb-2 rounded"
-          />
-
-          <textarea
-            value={descricao}
-            onChange={(e) => setDescricao(e.target.value)}
-            placeholder="Descrição da experiência"
-            className="w-full border px-3 py-2 mb-2 rounded"
-          ></textarea>
-
-          <button
-            type="button"
-            onClick={addExperiencia}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Adicionar Experiência
-          </button>
-
-          <div className="mt-4 space-y-2">
-
-            {experiencias.map((exp, i) => (
-              <div key={i} className="border p-2 rounded flex justify-between">
-
-                <div>
-                  <strong>{exp.cargo}</strong> – {exp.empresa} ({exp.periodo})
-                  <p className="text-sm text-gray-600">{exp.descricao}</p>
-                </div>
-
-                <button
-                  onClick={() => removeExperiencia(i)}
-                  className="text-red-600 font-bold"
-                >
-                  ×
-                </button>
-
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <aside className="bg-white border rounded-xl shadow p-6 h-full min-h-0 overflow-y-auto">
-
-          <h2 className="text-2xl font-extrabold mb-1">
-            {nome || "Seu Nome Completo"}
-          </h2>
-
-          <div className="h-[2px] bg-black my-4" />
-
-          <div className="overflow-y-auto px-6 pb-6 pr-4 space-y-4 scroll-area">
-            <h3 className="text-lg font-bold">Experiência Profissional</h3>
-
-            {experiencias.length === 0 ? (
-              <p className="text-gray-500 italic">
-                Suas experiências aparecerão aqui conforme você adiciona…
-              </p>
-            ) : (
-              <ul className="space-y-4">
-                {experiencias.map((exp, i) => (
-                  <li key={i} className="border border-gray-200 rounded-lg p-4">
-                    <div className="text-base font-semibold">{exp.cargo}</div>
-                    <div className="text-sm text-gray-600">
-                      {exp.empresa} • {exp.periodo} • {exp.local}
-                    </div>
-                    {exp.descricao && (
-                      <p className="text-sm mt-2 leading-relaxed">{exp.descricao}</p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </aside>
-      </main>
-
-      <div className="bg-white border rounded-xl shadow p-4 flex">
-        <div className="flex-1">Currículo com IA</div>
+        )}
       </div>
-
-      <div className="bg-white border rounded-xl shadow p-4 flex items-start justify-between gap-3">
-        <div className="flex-1">
-          <button
-            className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={() => showToast("success", "Enviado com sucesso!")}
-          >
-            Toast de sucesso
-          </button>
-          <button
-            className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={() => showToast("error", "Mensagem de erro!")}
-          >
-            Toast de erro
-          </button>
-          <button
-            className="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={() => showToast("warning", "Mensagem de aviso!")}
-          >
-            Toast de aviso
-          </button>
-          <button
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={() => showToast("info", "Mensagem de informação!")}
-          >
-            Toast de informação
-          </button>
-        </div>
-
-        <button
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-          onClick={() => {
-            aiService.sendRequest(`${API_KEY}`, showToast);
-          }}
-        >
-          Teste de API
-        </button>
-      </div>
-      {toast && (
-        <Toast
-          type={toast.type}
-          message={toast.message}
-          duration={3000}
-          onClose={removeToast}
-        />
-      )}
-    </div>
+    </ErrorBoundary>
   );
 }
 
