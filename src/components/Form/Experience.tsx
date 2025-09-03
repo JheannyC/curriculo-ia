@@ -112,7 +112,7 @@ export default function Experience({ onAdd, experiencias, onRemove }: Props) {
         className="w-full border px-3 py-2 rounded"
       />
 
-      <label className="block text-sm font-semibold">Período</label>
+      <label className="block text-sm font-semibold">Início</label>
 
       <div className="grid grid-cols-2 gap-2">
         <select
