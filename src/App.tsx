@@ -4,6 +4,8 @@ import FormSection from "./components/Layout/FormSection";
 import PreviewSection from "./components/Layout/PreviewSection";
 import Experience from "./components/Form/Experience";
 import type { Experiencia } from "./types/cv.types";
+import CVPreview from "./components/Preview/CVPreview"; //Novo
+
 
 export default function App() {
   const [nome, setNome] = useState<string>("");
@@ -11,7 +13,7 @@ export default function App() {
 
   const addExperiencia = (exp: Experiencia) =>
     setExperiencias((prev) => [...prev, exp]);
-
+  
   const removeExperiencia = (index: number) =>
     setExperiencias((prev) => prev.filter((_, i) => i !== index));
 
@@ -55,7 +57,17 @@ export default function App() {
           />
         </FormSection>
 
-        <PreviewSection>
+        <PreviewSection> 
+          <CVPreview 
+            nome={nome}
+            experiencias={experiencias}
+            // os campos abaixo virão no futuro:
+            // email={email}
+            // telefone={telefone}
+            // linkedin={linkedin}
+            // resumo={resumo}
+            // skills={skills}
+          />
           
         </PreviewSection>
       </main>
