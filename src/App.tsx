@@ -2,20 +2,21 @@ import "./App.css";
 import { useState } from "react";
 import FormSection from "./components/Layout/FormSection";
 import PreviewSection from "./components/Layout/PreviewSection";
-import type { Experiencia, Skill } from "./types/cv.types";
+import type {  Experiencia, Skill } from "./types/cv.types";
 import Skills from "./components/Form/Skills";
 import Experience from "./components/Form/Experience";
+import CVPreview from "./components/Preview/CVPreview";
 
 export default function App() {
     const [nome, setNome] = useState<string>("");
     const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
     const [skills, setSkills] = useState<Skill[]>([]);
 
-    const addExperiencia = (exp: Experiencia) =>
-      setExperiencias((prev) => [...prev, exp]);
-    
-    const removeExperiencia = (index: number) =>
-      setExperiencias((prev) => prev.filter((_, i) => i !== index));
+  const addExperiencia = (exp: Experiencia) =>
+    setExperiencias((prev) => [...prev, exp]);
+
+  const removeExperiencia = (index: number) =>
+    setExperiencias((prev) => prev.filter((_, i) => i !== index));
 
     const adicionarSkill = (skillData: Omit<Skill, 'id'>) => { 
     const novaSkill: Skill = {
@@ -78,11 +79,18 @@ export default function App() {
           
         </div>
 
-        <PreviewSection
-          nome={nome}
-          experiencias={experiencias}
-          skills={skills}
-        />
+        <PreviewSection>
+          <CVPreview 
+            nome={nome}
+            experiencias={experiencias}
+            // os campos abaixo virão no futuro:
+            // email={email}
+            // telefone={telefone}
+            // linkedin={linkedin}
+            // resumo={resumo}
+            // skills={skills}
+          />
+        </PreviewSection>
       </main>
     </div>
   );
