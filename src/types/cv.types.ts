@@ -5,3 +5,15 @@ export type Experiencia = {
   local: string;
   descricao: string;
 };
+
+export type SkillLevel = 'Básico' | 'Intermediário' | 'Avançado'
+export interface Skill {
+  id: string
+  name: string
+  level: SkillLevel
+};
+
+export interface PreviewSectionProps {
+  experiencias: Experiencia[];
+  skills: Skill[]; 
+}

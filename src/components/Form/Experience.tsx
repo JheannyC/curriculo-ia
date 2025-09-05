@@ -1,11 +1,11 @@
 import { useState } from "react";
 import type { Experiencia } from "../../types/cv.types";
 
-type Props = {
+interface Props {
+  experiencias: Experiencia[]; 
   onAdd: (exp: Experiencia) => void;
-  experiencias: Experiencia[];
   onRemove: (index: number) => void;
-};
+}
 
 export default function Experience({ onAdd, experiencias, onRemove }: Props) {
   const [cargo, setCargo] = useState("");
@@ -249,7 +249,6 @@ export default function Experience({ onAdd, experiencias, onRemove }: Props) {
               onClick={() => onRemove(i)}
               className="text-red-600 font-bold"
             >
-              ×
             </button>
           </div>
         ))}

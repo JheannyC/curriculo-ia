@@ -2,18 +2,33 @@ import "./App.css";
 import { useState } from "react";
 import FormSection from "./components/Layout/FormSection";
 import PreviewSection from "./components/Layout/PreviewSection";
+import type { Experiencia, Skill } from "./types/cv.types";
+import Skills from "./components/Form/Skills";
 import Experience from "./components/Form/Experience";
-import type { Experiencia } from "./types/cv.types";
 
 export default function App() {
-  const [nome, setNome] = useState<string>("");
-  const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
+    const [nome, setNome] = useState<string>("");
+    const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
+    const [skills, setSkills] = useState<Skill[]>([]);
 
-  const addExperiencia = (exp: Experiencia) =>
-    setExperiencias((prev) => [...prev, exp]);
+    const addExperiencia = (exp: Experiencia) =>
+      setExperiencias((prev) => [...prev, exp]);
+    
+    const removeExperiencia = (index: number) =>
+      setExperiencias((prev) => prev.filter((_, i) => i !== index));
 
-  const removeExperiencia = (index: number) =>
-    setExperiencias((prev) => prev.filter((_, i) => i !== index));
+    const adicionarSkill = (skillData: Omit<Skill, 'id'>) => { 
+    const novaSkill: Skill = {
+        ...skillData,
+        id: Date.now().toString()
+      };
+      setSkills(prev => [...prev, novaSkill]);
+    };
+
+    const removerSkill = (id: string) => {
+      setSkills(prev => prev.filter(skill => skill.id !== id));
+    };
+
 
   return (
     <div className="h-dvh flex flex-col">
@@ -46,19 +61,30 @@ export default function App() {
       </header>
 
       <main className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
-        
-        <FormSection title="Informações do Currículo">
-          <Experience
-            onAdd={addExperiencia}
-            experiencias={experiencias}
-            onRemove={removeExperiencia}
-          />
-        </FormSection>
-
-        <PreviewSection>
+        <div className="space-y-6">
           
-        </PreviewSection>
+          <FormSection title="Informações Pessoais">
+             <Experience
+                onAdd={addExperiencia}
+                experiencias={experiencias}
+                onRemove={removeExperiencia}
+              />
+              <Skills
+                skills={skills}
+                onAddSkill={adicionarSkill}
+                onRemoveSkill={removerSkill}
+              />
+          </FormSection>
+          
+        </div>
+
+        <PreviewSection
+          nome={nome}
+          experiencias={experiencias}
+          skills={skills}
+        />
       </main>
     </div>
   );
 }
+
