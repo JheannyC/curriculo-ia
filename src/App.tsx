@@ -1,68 +1,98 @@
 import "./App.css";
-import "../src/components/UI/Toast";
-import { useToast } from "../src/hooks/useToast";
-import Toast from "../src/components/UI/Toast";
-import { aiService } from "../src/services/aiService";
+import { useState } from "react";
+import FormSection from "./components/Layout/FormSection";
+import PreviewSection from "./components/Layout/PreviewSection";
+import type {  Experiencia, Skill } from "./types/cv.types";
+import Skills from "./components/Form/Skills";
+import Experience from "./components/Form/Experience";
+import CVPreview from "./components/Preview/CVPreview";
 
+export default function App() {
+    const [nome, setNome] = useState<string>("");
+    const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
+    const [skills, setSkills] = useState<Skill[]>([]);
 
-function App() {
+  const addExperiencia = (exp: Experiencia) =>
+    setExperiencias((prev) => [...prev, exp]);
 
-  const { showToast, toast, removeToast } = useToast();
-  const API_KEY = '';
+  const removeExperiencia = (index: number) =>
+    setExperiencias((prev) => prev.filter((_, i) => i !== index));
+
+    const adicionarSkill = (skillData: Omit<Skill, 'id'>) => { 
+    const novaSkill: Skill = {
+        ...skillData,
+        id: Date.now().toString()
+      };
+      setSkills(prev => [...prev, novaSkill]);
+    };
+
+    const removerSkill = (id: string) => {
+      setSkills(prev => prev.filter(skill => skill.id !== id));
+    };
+
 
   return (
-    <>
-      <div className="card flex ...">
-        <div className="flex-1 ...">Currículo com IA</div>
-      </div>
+    <div className="h-dvh flex flex-col">
 
-      <div className="card flex ...">
-        <div className="flex-1 ... ">
-          <button
-            className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={() => showToast("success", "Enviado com sucesso!")}
-          >
-            Toast de sucesso
-          </button>
-          <button
-            className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={() => showToast("error", "Mensagem de erro!")}
-          >
-            Toast de erro
-          </button>
-          <button
-            className="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={() => showToast("warning", "Mensagem de aviso!")}
-          >
-            Toast de aviso
-          </button>
-          <button
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={() => showToast("info", "Mensagem de informação!")}
-          >
-            Toast de informação
-          </button>
+      <header className="flex items-center justify-between px-4 py-3 bg-white border-b flex-none">
+        <div className="flex items-center gap-3">
+          <span className="logo" aria-hidden="true"></span>
+          <div>
+            <strong>Gerador de Currículos IA</strong>
+            <div className="subtitle text-sm text-gray-500">
+              Gerador Inteligente de Currículos com IA
+            </div>
+          </div>
         </div>
 
-        <button
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-          onClick={() => {
-            aiService.sendRequest(`${API_KEY}`, showToast);
-          }}
-        >
-          Teste de API
-        </button>
-      </div>
-      {toast && (
-        <Toast
-          type={toast.type}
-          message={toast.message}
-          duration={3000}
-          onClose={removeToast}
-        />
-      )}
-    </>
+        <div className="actions flex items-center gap-2">
+          <label className="api-key flex items-center gap-2 border rounded px-2 py-1">
+            <span>🔐</span>
+            <input
+              type="text"
+              placeholder="Cole sua API Key"
+              aria-label="API Key"
+              className="outline-none"
+            />
+          </label>
+          <button className="btn border rounded px-3 py-2" id="btnExport">
+            Exportar PDF
+          </button>
+        </div>
+      </header>
+
+      <main className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
+        <div className="space-y-6">
+          
+          <FormSection title="Informações Pessoais">
+             <Experience
+                onAdd={addExperiencia}
+                experiencias={experiencias}
+                onRemove={removeExperiencia}
+              />
+              <Skills
+                skills={skills}
+                onAddSkill={adicionarSkill}
+                onRemoveSkill={removerSkill}
+              />
+          </FormSection>
+          
+        </div>
+
+        <PreviewSection>
+          <CVPreview 
+            nome={nome}
+            experiencias={experiencias}
+            // os campos abaixo virão no futuro:
+            // email={email}
+            // telefone={telefone}
+            // linkedin={linkedin}
+            // resumo={resumo}
+            // skills={skills}
+          />
+        </PreviewSection>
+      </main>
+    </div>
   );
 }
 
-export default App;

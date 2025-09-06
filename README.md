@@ -41,3 +41,8 @@ No arquivo `aiService.ts`, existe uma função que é necessário passar a key g
 ```
 aiService.sendRequest(`${API_KEY}`, showToast);
 ```
+
+Para utilizar o serviço de melhorar a seção de habilidades do currículo, depois de autenticado o sistema deve identificar que o usuário está logado e basta utilizar o serviço passando a lista de habilidades como parâmetro.
+```
+aiService.improveSkills(text)
+```
