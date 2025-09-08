@@ -7,6 +7,7 @@ import Skills from "./components/Form/Skills";
 import Experience from "./components/Form/Experience";
 import CVPreview from "./components/Preview/CVPreview";
 import PersonalInfo from "./components/Form/PersonalInfo";
+import { improveSkills as useAIHook } from "./hooks/useAIEnhancement";
 
 export default function App() {
   const [pessoal, setPessoal] = useState<DadosPessoais>({
@@ -18,10 +19,11 @@ export default function App() {
   });
   const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [apiKey, setApiKey] = useState<string>("");
 
   const updatePessoal = (patch: Partial<DadosPessoais>) => {
     setPessoal((prev) => ({ ...prev, ...patch }));
-  }
+  };
 
   const addExperiencia = (exp: Experiencia) =>
     setExperiencias((prev) => [...prev, exp]);
@@ -29,22 +31,25 @@ export default function App() {
   const removeExperiencia = (index: number) =>
     setExperiencias((prev) => prev.filter((_, i) => i !== index));
 
-  const adicionarSkill = (skillData: Omit<Skill, 'id'>) => {
+  const adicionarSkill = (skillData: Omit<Skill, "id">) => {
     const novaSkill: Skill = {
       ...skillData,
-      id: Date.now().toString()
+      id: Date.now().toString(),
     };
-    setSkills(prev => [...prev, novaSkill]);
+    setSkills((prev) => [...prev, novaSkill]);
   };
 
   const removerSkill = (id: string) => {
-    setSkills(prev => prev.filter(skill => skill.id !== id));
+    setSkills((prev) => prev.filter((skill) => skill.id !== id));
   };
 
+   const {
+    setApiKey: setAIKey,
+    validateKey,
+  } = useAIHook();
 
   return (
     <div className="h-dvh flex flex-col">
-
       <header className="flex items-center justify-between px-4 py-3 bg-white border-b flex-none">
         <div className="flex items-center gap-3">
           <span className="logo" aria-hidden="true"></span>
@@ -64,22 +69,39 @@ export default function App() {
               placeholder="Cole sua API Key"
               aria-label="API Key"
               className="outline-none"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
             />
           </label>
-          <button className="btn border rounded px-3 py-2" id="btnExport">
-            Exportar PDF
+          <button
+            className="btn bg-blue-600 text-white rounded px-3 py-2 hover:bg-blue-700"
+            onClick={async () => {
+              const key = apiKey.trim();
+              if (!key) {
+                alert("⚠️ Insira sua API Key primeiro!");
+                return;
+              }
+
+              setAIKey(key);
+
+              const ok = await validateKey(key);
+
+              if (ok) {
+                localStorage.setItem("AI_API_KEY", key);
+                alert("✅ API Key válida e definida com sucesso!");
+              }
+              console.log("API Key salva:", key);
+            }}
+          >
+            Selecionar API Key
           </button>
         </div>
       </header>
 
       <main className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
         <div className="space-y-6">
-
           <FormSection title="Informações Pessoais">
-            <PersonalInfo
-              personalInfo={pessoal}
-              onUpdate={updatePessoal}
-            />
+            <PersonalInfo personalInfo={pessoal} onUpdate={updatePessoal} apiKey={apiKey} />
             <Skills
               skills={skills}
               onAddSkill={adicionarSkill}
@@ -89,9 +111,9 @@ export default function App() {
               onAdd={addExperiencia}
               experiencias={experiencias}
               onRemove={removeExperiencia}
+              apiKey={apiKey}
             />
           </FormSection>
-
         </div>
 
         <PreviewSection>
@@ -109,4 +131,3 @@ export default function App() {
     </div>
   );
 }
-

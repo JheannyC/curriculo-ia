@@ -1,13 +1,15 @@
 import { useState } from "react";
 import type { Experiencia } from "../../types/cv.types";
+import AIEnhanceButton from "./AIEnhanceButton";
 
 interface Props {
-  experiencias: Experiencia[]; 
+  experiencias: Experiencia[];
   onAdd: (exp: Experiencia) => void;
   onRemove: (index: number) => void;
+  apiKey: string;
 }
 
-export default function Experience({ onAdd, experiencias, onRemove }: Props) {
+export default function Experience({ onAdd, experiencias, onRemove, apiKey }: Props) {
   const [cargo, setCargo] = useState("");
   const [empresa, setEmpresa] = useState("");
   const [inicioMes, setInicioMes] = useState("");
@@ -223,12 +225,22 @@ export default function Experience({ onAdd, experiencias, onRemove }: Props) {
         placeholder="Local (ex.: Florianópolis/SC)"
         className="w-full border px-3 py-2 rounded"
       />
-      <textarea
-        value={descricao}
-        onChange={(e) => setDescricao(e.target.value)}
-        placeholder="Descrição da experiência"
-        className="w-full border px-3 py-2 rounded"
-      />
+      <div className="flex gap-2">
+        <textarea
+          value={descricao}
+          onChange={(e) => setDescricao(e.target.value)}
+          placeholder="Descrição da experiência"
+          className="flex-1 border px-3 py-2 mb-2 rounded"
+          rows={4}
+        />
+        <AIEnhanceButton
+          apiKey={apiKey}
+          value={descricao}
+          context="descricao"
+          extraContext={{ cargo, empresa, inicioMes, fimMes, inicioAno, fimAno, local }}
+          onApply={(newText) => setDescricao(newText)}
+        />
+      </div>
 
       <button
         type="button"
@@ -248,8 +260,7 @@ export default function Experience({ onAdd, experiencias, onRemove }: Props) {
             <button
               onClick={() => onRemove(i)}
               className="text-red-600 font-bold"
-            >
-            </button>
+            ></button>
           </div>
         ))}
       </div>
