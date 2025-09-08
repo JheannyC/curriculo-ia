@@ -16,8 +16,8 @@ export default function SkillsSection({ skills }: { skills?: Skill[] }) {
       {skills && skills.length > 0 ? (
         <ul className="flex flex-wrap gap-2">
           {skills.map((s, i) => (
-            <li key={`${s.nome}-${i}`}>
-              <Badge>{`${s.nome} • ${s.nivel}`}</Badge>
+            <li key={`${s.name}-${i}`}>
+              <Badge>{`${s.name} • ${s.level}`}</Badge>
             </li>
           ))}
         </ul>
