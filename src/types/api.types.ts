@@ -1,10 +1,7 @@
-// Modelo alvo (está embutido na URL do seu serviço)
 export type ModelId = "gemini-2.0-flash";
 
-// ====== Request ======
 export interface Part {
   text?: string;
-  // inlineData / fileData etc. podem ser adicionados no futuro
 }
 
 export interface Content {
@@ -21,22 +18,19 @@ export interface GenerationConfig {
   topK?: number;
   topP?: number;
   maxOutputTokens?: number;
-  // stopSequences?: string[];
 }
 
 export interface GenerateContentRequest {
-  contents: Content[];                    // obrigatório
-  system_instruction?: SystemInstruction; // opcional
-  generationConfig?: GenerationConfig;    // opcional
-  safetySettings?: unknown;               // se precisar, tipamos depois
+  contents: Content[];
+  system_instruction?: SystemInstruction;
+  generationConfig?: GenerationConfig;
+  safetySettings?: unknown;
 }
 
-// ====== Response ======
 export interface Candidate {
   content: Content;
   finishReason?: string;
   index?: number;
-  // safetyRatings?: Array<{category: string; probability: string;}>;
 }
 
 export interface GenerateContentResponse {
@@ -44,7 +38,6 @@ export interface GenerateContentResponse {
   promptFeedback?: unknown;
 }
 
-// ====== Error shape (quando a API retorna erro) ======
 export interface GoogleApiErrorPayload {
   error?: {
     code?: number;
@@ -55,7 +48,7 @@ export interface GoogleApiErrorPayload {
 }
 
 export interface ApiError extends Error {
-  status?: number; // HTTP status
-  code?: number;   // error.code da API
-  raw?: unknown;   // corpo bruto da resposta (opcional)
+  status?: number;
+  code?: number;
+  raw?: unknown;
 }
