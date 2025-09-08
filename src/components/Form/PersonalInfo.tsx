@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { DadosPessoais } from '../../types/cv.types';
+import AIEnhanceButton from './AIEnhanceButton';
 
 interface PersonalInfoProps {
   personalInfo: DadosPessoais;
@@ -22,7 +23,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
 
   const validateField = (field: string, value: string) => {
     const newErrors = { ...errors };
-    
+
     switch (field) {
       case 'email':
         if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
@@ -31,7 +32,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
           delete newErrors.email;
         }
         break;
-      
+
       case 'telefone':
         if (value && !/^[0-9+\s\(\)\-]+$/.test(value)) {
           newErrors.telefone = "Apenas números, +, espaços e ()-";
@@ -39,7 +40,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
           delete newErrors.telefone;
         }
         break;
-      
+
       case 'linkedin':
         if (value && !value.includes('linkedin.com')) {
           newErrors.linkedin = "Link inválido! Insira um link do LinkedIn";
@@ -47,7 +48,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
           delete newErrors.linkedin;
         }
         break;
-      
+
       case 'nome':
         if (!value.trim()) {
           newErrors.nome = "Favor insira o seu nome completo";
@@ -55,18 +56,18 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
           delete newErrors.nome;
         }
         break;
-      
+
       default:
         break;
     }
-    
+
     setErrors(newErrors);
   };
 
   return (
     <div className="space-y-4">
       <h3 className="font-semibold">Dados Pessoais</h3>
-      
+
       {/* Nome Completo - Obrigatório */}
       <div>
         <label htmlFor="nome" className="block text-sm font-medium text-gray-700 mb-1">
@@ -80,9 +81,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
           value={personalInfo.nome}
           onChange={handleChange}
           onBlur={handleBlur}
-          className={`w-full border px-3 py-2 rounded ${
-            errors.nome ? 'border-red-500' : 'border-gray-300'
-          }`}
+          className={`w-full border px-3 py-2 rounded ${errors.nome ? 'border-red-500' : 'border-gray-300'
+            }`}
           placeholder="Seu nome completo"
           required
           aria-required="true"
@@ -93,7 +93,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
           <p id="error-nome" className="text-red-600 text-sm mt-1">{errors.nome}</p>
         )}
       </div>
-      
+
       {/* Email e Telefone - Grid Responsivo */}
       <div className="grid grid-cols-2 gap-4">
         {/* Email - Obrigatório */}
@@ -109,9 +109,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
             value={personalInfo.email}
             onChange={handleChange}
             onBlur={handleBlur}
-            className={`w-full border px-3 py-2 rounded ${
-              errors.email ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full border px-3 py-2 rounded ${errors.email ? 'border-red-500' : 'border-gray-300'
+              }`}
             placeholder="seu@email.com"
             required
             aria-required="true"
@@ -122,7 +121,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
             <p id="error-email" className="text-red-600 text-sm mt-1">{errors.email}</p>
           )}
         </div>
-        
+
         {/* Telefone - Opcional */}
         <div>
           <label htmlFor="telefone" className="block text-sm font-medium text-gray-700 mb-1">
@@ -135,9 +134,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
             value={personalInfo.telefone}
             onChange={handleChange}
             onBlur={handleBlur}
-            className={`w-full border px-3 py-2 rounded ${
-              errors.telefone ? 'border-red-500' : 'border-gray-300'
-            }`}
+            className={`w-full border px-3 py-2 rounded ${errors.telefone ? 'border-red-500' : 'border-gray-300'
+              }`}
             placeholder="(00) 00000-0000"
             aria-label="Número de telefone"
             aria-invalid={!!errors.telefone}
@@ -148,7 +146,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
           )}
         </div>
       </div>
-      
+
       {/* LinkedIn - Opcional */}
       <div>
         <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 mb-1">
@@ -161,9 +159,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
           value={personalInfo.linkedin}
           onChange={handleChange}
           onBlur={handleBlur}
-          className={`w-full border px-3 py-2 rounded ${
-            errors.linkedin ? 'border-red-500' : 'border-gray-300'
-          }`}
+          className={`w-full border px-3 py-2 rounded ${errors.linkedin ? 'border-red-500' : 'border-gray-300'
+            }`}
           placeholder="https://linkedin.com/in/seuperfil"
           aria-label="Perfil do LinkedIn"
           aria-invalid={!!errors.linkedin}
@@ -173,7 +170,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
           <p id="error-linkedin" className="text-red-600 text-sm mt-1">{errors.linkedin}</p>
         )}
       </div>
-      
+
       {/* Resumo Profissional - Opcional com Contador */}
       <div>
         <label htmlFor="resumo" className="block text-sm font-medium text-gray-700 mb-1">
@@ -193,6 +190,9 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
           className="w-full border px-3 py-2 rounded border-gray-300"
           placeholder="Descreva brevemente sua experiência e objetivos profissionais"
           aria-label="Resumo profissional"
+        />
+        <AIEnhanceButton
+          onEnhance={() => console.log("Melhorar Resumo:", personalInfo.resumo)}
         />
       </div>
 

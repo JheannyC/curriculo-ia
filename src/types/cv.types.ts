@@ -17,6 +17,7 @@ export type DadosPessoais = {
 export type CVData = {
   pessoal: DadosPessoais;
   experiencias: Experiencia[];
+  skills: Skill[];
 };
 
 export type SkillLevel = 'Básico' | 'Intermediário' | 'Avançado';

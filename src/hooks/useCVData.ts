@@ -5,6 +5,14 @@ import type { CVData } from '../types/cv.types';
 export const useCVData = (initialData?: Partial<CVData>) => {
   const defaultCVData: CVData = {
     skills: [],
+    pessoal: {
+      nome: '',
+      email: '',
+      telefone: '',
+      linkedin: '',
+      resumo: ''
+    },
+    experiencias: []
   };
 
   const [cvData, setCVData] = useState<CVData>({
