@@ -106,7 +106,26 @@ export default function App() {
             </label>
             <button
               className="btn border rounded px-3 py-2 bg-blue-600 text-white hover:bg-blue-700"
-              onClick={() => validateKey(apiKey)}
+              onClick={async () => {
+                const key = apiKey.trim();
+                if (!key) {
+                  alert("⚠️ Insira sua API Key primeiro.");
+                  return;
+                }
+                // garante que o hook conhece a chave antes de validar
+                setApiKey(key);
+
+                try {
+                  const ok = await validateKey(key);
+                  if (ok) {
+                    localStorage.setItem("AI_API_KEY", key);
+                    alert("✅ API Key definida e validada com sucesso!");
+                  }
+                } catch (e) {
+                  console.error(e);
+                  alert("❌ Falha ao validar a API Key.");
+                }
+              }}
             >
               Selecionar API Key
             </button>
