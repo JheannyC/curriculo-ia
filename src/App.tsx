@@ -7,11 +7,14 @@ import Skills from "./components/Form/Skills";
 import Experience from "./components/Form/Experience";
 import CVPreview from "./components/Preview/CVPreview";
 import PersonalInfo from "./components/Form/PersonalInfo";
+import { improveSkills as useAIHook } from "./hooks/useAIEnhancement";
 import ErrorBoundary from "./components/UI/ErrorBoundary";
-import { NetworkFallback, ComponentFallback } from "./components/UI/FallbackComponents";
+import {
+  NetworkFallback,
+  ComponentFallback,
+} from "./components/UI/FallbackComponents";
 import { useNetworkStatus } from "./hooks/useNetworkStatus";
 import { useRetry } from "./hooks/useRetry";
-import { improveSkills as useAIHook } from "./hooks/useAIEnhancement";
 
 export default function App() {
   const [pessoal, setPessoal] = useState<DadosPessoais>({
@@ -23,7 +26,6 @@ export default function App() {
   });
   const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
-  const [apiKey, setApiKey] = useState<string>("");
 
   const { isOnline } = useNetworkStatus();
   const { retry } = useRetry({ maxRetries: 3 });
@@ -46,47 +48,36 @@ export default function App() {
     });
   };
 
-  const adicionarSkill = async (skillData: Omit<Skill, 'id'>) => {
+  const adicionarSkill = async (skillData: Omit<Skill, "id">) => {
     return await retry(() => {
       const novaSkill: Skill = {
         ...skillData,
-        id: Date.now().toString()
+        id: Date.now().toString(),
       };
-      setSkills(prev => [...prev, novaSkill]);
+      setSkills((prev) => [...prev, novaSkill]);
       return Promise.resolve();
     });
-  const adicionarSkill = (skillData: Omit<Skill, "id">) => {
-    const novaSkill: Skill = {
-      ...skillData,
-      id: Date.now().toString(),
-    };
-    setSkills((prev) => [...prev, novaSkill]);
   };
 
   const removerSkill = async (id: string) => {
     return await retry(() => {
-      setSkills(prev => prev.filter(skill => skill.id !== id));
+      setSkills((prev) => prev.filter((skill) => skill.id !== id));
       return Promise.resolve();
     });
-  const removerSkill = (id: string) => {
-    setSkills((prev) => prev.filter((skill) => skill.id !== id));
   };
 
-   const {
-    setApiKey: setAIKey,
-    validateKey,
-  } = useAIHook();
+  const { apiKey, setApiKey, validateKey } = useAIHook();
 
   return (
     <div className="h-dvh flex flex-col">
-      <ErrorBoundary 
+      <ErrorBoundary
         fallback={<ComponentFallback context="Aplicação principal" />}
         componentName="App"
       >
         {!isOnline && (
-          <NetworkFallback 
-            context="Aplicação" 
-            onRetry={() => window.location.reload()} 
+          <NetworkFallback
+            context="Aplicação"
+            onRetry={() => window.location.reload()}
           />
         )}
 
@@ -100,16 +91,6 @@ export default function App() {
               </div>
             </div>
           </div>
-      <header className="flex items-center justify-between px-4 py-3 bg-white border-b flex-none">
-        <div className="flex items-center gap-3">
-          <span className="logo" aria-hidden="true"></span>
-          <div>
-            <strong>Gerador de Currículos IA</strong>
-            <div className="subtitle text-sm text-gray-500">
-              Gerador Inteligente de Currículos com IA
-            </div>
-          </div>
-        </div>
 
           <div className="actions flex items-center gap-2">
             <label className="api-key flex items-center gap-2 border rounded px-2 py-1">
@@ -119,54 +100,25 @@ export default function App() {
                 placeholder="Cole sua API Key"
                 aria-label="API Key"
                 className="outline-none"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
               />
             </label>
-            <button className="btn border rounded px-3 py-2" id="btnExport">
-              Exportar PDF
+            <button
+              className="btn border rounded px-3 py-2 bg-blue-600 text-white hover:bg-blue-700"
+              onClick={() => validateKey(apiKey)}
+            >
+              Selecionar API Key
             </button>
           </div>
         </header>
-        <div className="actions flex items-center gap-2">
-          <label className="api-key flex items-center gap-2 border rounded px-2 py-1">
-            <span>🔐</span>
-            <input
-              type="text"
-              placeholder="Cole sua API Key"
-              aria-label="API Key"
-              className="outline-none"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-          </label>
-          <button
-            className="btn bg-blue-600 text-white rounded px-3 py-2 hover:bg-blue-700"
-            onClick={async () => {
-              const key = apiKey.trim();
-              if (!key) {
-                alert("⚠️ Insira sua API Key primeiro!");
-                return;
-              }
-
-              setAIKey(key);
-
-              const ok = await validateKey(key);
-
-              if (ok) {
-                localStorage.setItem("AI_API_KEY", key);
-                alert("✅ API Key válida e definida com sucesso!");
-              }
-              console.log("API Key salva:", key);
-            }}
-          >
-            Selecionar API Key
-          </button>
-        </div>
-      </header>
 
         <main className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
           <div className="space-y-6">
-            <ErrorBoundary 
-              fallback={<ComponentFallback context="Formulário de informações" />}
+            <ErrorBoundary
+              fallback={
+                <ComponentFallback context="Formulário de informações" />
+              }
               componentName="FormSection"
             >
               <FormSection title="Informações Pessoais">
@@ -174,6 +126,7 @@ export default function App() {
                   <PersonalInfo
                     personalInfo={pessoal}
                     onUpdate={updatePessoal}
+                    apiKey={apiKey}
                   />
                 </ErrorBoundary>
 
@@ -187,6 +140,7 @@ export default function App() {
 
                 <ErrorBoundary componentName="Experience">
                   <Experience
+                    apiKey={apiKey}
                     onAdd={addExperiencia}
                     experiencias={experiencias}
                     onRemove={removeExperiencia}
@@ -195,25 +149,8 @@ export default function App() {
               </FormSection>
             </ErrorBoundary>
           </div>
-      <main className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
-        <div className="space-y-6">
-          <FormSection title="Informações Pessoais">
-            <PersonalInfo personalInfo={pessoal} onUpdate={updatePessoal} apiKey={apiKey} />
-            <Skills
-              skills={skills}
-              onAddSkill={adicionarSkill}
-              onRemoveSkill={removerSkill}
-            />
-            <Experience
-              onAdd={addExperiencia}
-              experiencias={experiencias}
-              onRemove={removeExperiencia}
-              apiKey={apiKey}
-            />
-          </FormSection>
-        </div>
 
-          <ErrorBoundary 
+          <ErrorBoundary
             fallback={<ComponentFallback context="Visualização do currículo" />}
             componentName="PreviewSection"
           >
