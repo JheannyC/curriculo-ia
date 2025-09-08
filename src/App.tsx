@@ -88,7 +88,7 @@ export default function App() {
             // telefone={telefone}
             // linkedin={linkedin}
             // resumo={resumo}
-            // skills={skills}
+            skills={skills}
           />
         </PreviewSection>
       </main>

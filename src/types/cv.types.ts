@@ -13,7 +13,3 @@ export interface Skill {
   level: SkillLevel
 };
 
-export interface PreviewSectionProps {
-  experiencias: Experiencia[];
-  skills: Skill[]; 
-}

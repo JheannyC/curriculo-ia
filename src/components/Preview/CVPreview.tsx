@@ -4,8 +4,8 @@ import SkillsSection from "./SkillsSection";
 import ExperienceSection from "./ExperienceSection";
 
 export type Skill = {
-  nome: string;
-  nivel: "Básico" | "Intermediário" | "Avançado";
+  name: string;
+  level: "Básico" | "Intermediário" | "Avançado";
 };
 
 type CVPreviewProps = {
