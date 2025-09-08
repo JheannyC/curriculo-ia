@@ -2,15 +2,26 @@ import "./App.css";
 import { useState } from "react";
 import FormSection from "./components/Layout/FormSection";
 import PreviewSection from "./components/Layout/PreviewSection";
-import type {  Experiencia, Skill } from "./types/cv.types";
+import type { Experiencia, Skill, DadosPessoais } from "./types/cv.types";
 import Skills from "./components/Form/Skills";
 import Experience from "./components/Form/Experience";
 import CVPreview from "./components/Preview/CVPreview";
+import PersonalInfo from "./components/Form/PersonalInfo";
 
 export default function App() {
-    const [nome, setNome] = useState<string>("");
-    const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
-    const [skills, setSkills] = useState<Skill[]>([]);
+  const [pessoal, setPessoal] = useState<DadosPessoais>({
+    nome: "",
+    email: "",
+    telefone: "",
+    linkedin: "",
+    resumo: "",
+  });
+  const [experiencias, setExperiencias] = useState<Experiencia[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
+
+  const updatePessoal = (patch: Partial<DadosPessoais>) => {
+    setPessoal((prev) => ({ ...prev, ...patch }));
+  }
 
   const addExperiencia = (exp: Experiencia) =>
     setExperiencias((prev) => [...prev, exp]);
@@ -18,17 +29,17 @@ export default function App() {
   const removeExperiencia = (index: number) =>
     setExperiencias((prev) => prev.filter((_, i) => i !== index));
 
-    const adicionarSkill = (skillData: Omit<Skill, 'id'>) => { 
+  const adicionarSkill = (skillData: Omit<Skill, 'id'>) => {
     const novaSkill: Skill = {
-        ...skillData,
-        id: Date.now().toString()
-      };
-      setSkills(prev => [...prev, novaSkill]);
+      ...skillData,
+      id: Date.now().toString()
     };
+    setSkills(prev => [...prev, novaSkill]);
+  };
 
-    const removerSkill = (id: string) => {
-      setSkills(prev => prev.filter(skill => skill.id !== id));
-    };
+  const removerSkill = (id: string) => {
+    setSkills(prev => prev.filter(skill => skill.id !== id));
+  };
 
 
   return (
@@ -63,31 +74,34 @@ export default function App() {
 
       <main className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
         <div className="space-y-6">
-          
+
           <FormSection title="Informações Pessoais">
-             <Experience
-                onAdd={addExperiencia}
-                experiencias={experiencias}
-                onRemove={removeExperiencia}
-              />
-              <Skills
-                skills={skills}
-                onAddSkill={adicionarSkill}
-                onRemoveSkill={removerSkill}
-              />
+            <PersonalInfo
+              personalInfo={pessoal}
+              onUpdate={updatePessoal}
+            />
+            <Experience
+              onAdd={addExperiencia}
+              experiencias={experiencias}
+              onRemove={removeExperiencia}
+            />
+            <Skills
+              skills={skills}
+              onAddSkill={adicionarSkill}
+              onRemoveSkill={removerSkill}
+            />
           </FormSection>
-          
+
         </div>
 
         <PreviewSection>
-          <CVPreview 
-            nome={nome}
+          <CVPreview
+            nome={pessoal.nome}
             experiencias={experiencias}
-            // os campos abaixo virão no futuro:
-            // email={email}
-            // telefone={telefone}
-            // linkedin={linkedin}
-            // resumo={resumo}
+            email={pessoal.email}
+            telefone={pessoal.telefone}
+            linkedin={pessoal.linkedin}
+            resumo={pessoal.resumo}
             skills={skills}
           />
         </PreviewSection>

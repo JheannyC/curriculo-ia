@@ -33,8 +33,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
         break;
       
       case 'telefone':
-        if (value && !/^[0-9\s\(\)\-]+$/.test(value)) {
-          newErrors.telefone = "Apenas números, espaços e ()-";
+        if (value && !/^[0-9+\s\(\)\-]+$/.test(value)) {
+          newErrors.telefone = "Apenas números, +, espaços e ()-";
         } else {
           delete newErrors.telefone;
         }
@@ -143,7 +143,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ personalInfo, onUpdate }) =
             aria-invalid={!!errors.telefone}
             aria-describedby={errors.telefone ? 'error-telefone' : undefined}
           />
-          {errors.phone && (
+          {errors.telefone && (
             <p id="error-telefone" className="text-red-600 text-sm mt-1">{errors.telefone}</p>
           )}
         </div>
