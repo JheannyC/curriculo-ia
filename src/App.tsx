@@ -80,15 +80,15 @@ export default function App() {
               personalInfo={pessoal}
               onUpdate={updatePessoal}
             />
-            <Experience
-              onAdd={addExperiencia}
-              experiencias={experiencias}
-              onRemove={removeExperiencia}
-            />
             <Skills
               skills={skills}
               onAddSkill={adicionarSkill}
               onRemoveSkill={removerSkill}
+            />
+            <Experience
+              onAdd={addExperiencia}
+              experiencias={experiencias}
+              onRemove={removeExperiencia}
             />
           </FormSection>
 
