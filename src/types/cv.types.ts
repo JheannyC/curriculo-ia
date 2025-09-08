@@ -20,6 +20,7 @@ export type CVData = {
 };
 
 export type SkillLevel = 'Básico' | 'Intermediário' | 'Avançado';
+
 export interface Skill {
   id: string;
   name: string;
