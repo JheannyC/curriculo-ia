@@ -1,6 +1,4 @@
 import type { Skill } from "./CVPreview";
-import { improveSkills, sendRequest } from "../../services/aiService";
-import { useState } from "react";
 
 function Badge({ children }: { children: string }) {
   return (
@@ -19,12 +17,11 @@ export default function SkillsSection({ skills }: { skills?: Skill[] }) {
         <>
           <ul className="flex flex-wrap gap-2">
             {skills.map((s, i) => (
-              <li key={`${s.nome}-${i}`}>
-                <Badge>{`${s.nome} • ${s.nivel}`}</Badge>
+              <li key={`${s.name}-${i}`}>
+                <Badge>{`${s.name} • ${s.level}`}</Badge>
               </li>
             ))}
           </ul>
-          <button className="btn">Melhorar com IA</button>
         </>
       ) : (
         <p className="border border-dashed rounded-lg p-3 text-gray-400">
